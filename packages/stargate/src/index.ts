@@ -117,6 +117,7 @@ export { isSearchTxQueryArray, SearchPair, SearchTxQuery } from "./search";
 export {
   createDefaultAminoConverters,
   defaultRegistryTypes,
+  Fee,
   SignerData,
   SigningStargateClient,
   SigningStargateClientOptions,

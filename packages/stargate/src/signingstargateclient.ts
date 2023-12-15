@@ -65,6 +65,15 @@ export const defaultRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ...vestingTypes,
 ];
 
+export interface Fee {
+  readonly gas: "auto" | number;
+  readonly gasPrice: GasPrice;
+}
+
+function instanceofFee(object: any): boolean {
+  return typeof object === "object" && "gas" in object && "gasPrice" in object;
+}
+
 /**
  * Signing information for a single signer that is not included in the transaction.
  *
@@ -195,7 +204,7 @@ export class SigningStargateClient extends StargateClient {
     senderAddress: string,
     recipientAddress: string,
     amount: readonly Coin[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const sendMsg: MsgSendEncodeObject = {
@@ -213,7 +222,7 @@ export class SigningStargateClient extends StargateClient {
     delegatorAddress: string,
     validatorAddress: string,
     amount: Coin,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const delegateMsg: MsgDelegateEncodeObject = {
@@ -231,7 +240,7 @@ export class SigningStargateClient extends StargateClient {
     delegatorAddress: string,
     validatorAddress: string,
     amount: Coin,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const undelegateMsg: MsgUndelegateEncodeObject = {
@@ -248,7 +257,7 @@ export class SigningStargateClient extends StargateClient {
   public async withdrawRewards(
     delegatorAddress: string,
     validatorAddress: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const withdrawMsg: MsgWithdrawDelegatorRewardEncodeObject = {
@@ -276,7 +285,7 @@ export class SigningStargateClient extends StargateClient {
     timeoutHeight: Height | undefined,
     /** timeout in seconds */
     timeoutTimestamp: number | undefined,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const timeoutTimestampNanoseconds = timeoutTimestamp
@@ -300,20 +309,24 @@ export class SigningStargateClient extends StargateClient {
   public async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     timeoutHeight?: bigint,
   ): Promise<DeliverTxResponse> {
     let usedFee: StdFee;
-    if (fee == "auto" || typeof fee === "number") {
-      assertDefined(this.gasPrice, "Gas price must be set in the client options when auto gas is used.");
+    if (fee == "auto" || typeof fee === "number" || instanceofFee(fee)) {
+      // @ts-ignore
+      const gas = instanceofFee(fee) ? fee.gas : fee;
+      // @ts-ignore
+      const gasPrice = instanceofFee(fee) ? fee.gasPrice : this.gasPrice;
+      assertDefined(gasPrice, "Gas price must be set in the client options when auto gas is used.");
       const gasEstimation = await this.simulate(signerAddress, messages, memo);
       // Starting with Cosmos SDK 0.47, we see many cases in which 1.3 is not enough anymore
       // E.g. https://github.com/cosmos/cosmos-sdk/issues/16020
-      const multiplier = typeof fee === "number" ? fee : 1.4;
-      usedFee = calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice);
+      const multiplier = typeof gas === "number" ? gas : 1.4;
+      usedFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice);
     } else {
-      usedFee = fee;
+      usedFee = fee as StdFee;
     }
     const txRaw = await this.sign(signerAddress, messages, usedFee, memo, undefined, timeoutHeight);
     const txBytes = TxRaw.encode(txRaw).finish();
@@ -329,18 +342,22 @@ export class SigningStargateClient extends StargateClient {
   public async signAndBroadcastSync(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     timeoutHeight?: bigint,
   ): Promise<string> {
     let usedFee: StdFee;
-    if (fee == "auto" || typeof fee === "number") {
-      assertDefined(this.gasPrice, "Gas price must be set in the client options when auto gas is used.");
+    if (fee == "auto" || typeof fee === "number" || instanceofFee(fee)) {
+      // @ts-ignore
+      const gas = instanceofFee(fee) ? fee.gas : fee;
+      // @ts-ignore
+      const gasPrice = instanceofFee(fee) ? fee.gasPrice : this.gasPrice;
+      assertDefined(gasPrice, "Gas price must be set in the client options when auto gas is used.");
       const gasEstimation = await this.simulate(signerAddress, messages, memo);
-      const multiplier = typeof fee === "number" ? fee : 1.3;
-      usedFee = calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice);
+      const multiplier = typeof gas === "number" ? gas : 1.3;
+      usedFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice);
     } else {
-      usedFee = fee;
+      usedFee = fee as StdFee;
     }
     const txRaw = await this.sign(signerAddress, messages, usedFee, memo, undefined, timeoutHeight);
     const txBytes = TxRaw.encode(txRaw).finish();

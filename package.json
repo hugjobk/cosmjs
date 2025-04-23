@@ -1,6 +1,6 @@
 {
-  "name": "cosmjs-monorepo-root",
-  "description": "Transaction codec and client to communicate with any wasmd blockchain",
+  "name": "titan-cosmjs-monorepo-root",
+  "description": "Transaction codec and client to communicate with any wasmd and ethermint blockchain",
   "private": true,
   "author": "Ethan Frey <ethanfrey@users.noreply.github.com>",
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs"
+    "url": "https://github.com/titantkx/cosmjs"
   },
   "publishConfig": {
     "access": "public",
@@ -33,11 +33,10 @@
     "test-firefox": "yarn workspaces foreach --topological-dev --parallel --verbose run test-firefox",
     "test-chrome": "yarn workspaces foreach --topological-dev --parallel --verbose run test-chrome",
     "coverage": "yarn workspaces foreach --topological-dev --parallel --verbose run coverage",
-    "build": "yarn workspaces foreach --topological-dev --parallel --verbose run build",
+    "build": "yarn workspaces foreach --topological-dev --parallel --verbose run build && ./patch-package-name.sh titan-cosmjs",
     "docs": "yarn workspaces foreach --topological-dev --parallel --verbose run docs",
     "pack-web": "yarn workspaces foreach --topological-dev --parallel --verbose run pack-web",
-    "publish-next": "yarn workspaces foreach --no-private exec yarn npm publish --tag next",
-    "publish-latest": "yarn workspaces foreach --no-private exec yarn npm publish"
+    "publish": "yarn build && ./publish.sh"
   },
   "devDependencies": {
     "@cosmjs/amino": "workspace:^",

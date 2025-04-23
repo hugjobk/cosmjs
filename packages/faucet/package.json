@@ -1,10 +1,11 @@
 {
   "name": "@cosmjs/faucet",
-  "version": "0.32.0",
+  "version": "0.32.13",
   "description": "The faucet",
   "contributors": [
     "Ethan Frey <ethanfrey@users.noreply.github.com>",
-    "Simon Warta <webmaster128@users.noreply.github.com>"
+    "Simon Warta <webmaster128@users.noreply.github.com>",
+    "Hung Doan <hugjobk@gmail.com>"
   ],
   "license": "Apache-2.0",
   "bin": {
@@ -19,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs/tree/main/packages/faucet"
+    "url": "https://github.com/titantkx/cosmjs/tree/develop/packages/faucet"
   },
   "publishConfig": {
     "access": "public",

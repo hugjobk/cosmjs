@@ -32,7 +32,7 @@ export class AminoTypes {
       throw new Error(
         `Type URL '${typeUrl}' does not exist in the Amino message type register. ` +
           "If you need support for this message type, you can pass in additional entries to the AminoTypes constructor. " +
-          "If you think this message type should be included by default, please open an issue at https://github.com/cosmos/cosmjs/issues.",
+          "If you think this message type should be included by default, please open an issue at https://github.com/titantkx/cosmjs/issues.",
       );
     }
     return {
@@ -49,7 +49,7 @@ export class AminoTypes {
         throw new Error(
           `Amino type identifier '${type}' does not exist in the Amino message type register. ` +
             "If you need support for this message type, you can pass in additional entries to the AminoTypes constructor. " +
-            "If you think this message type should be included by default, please open an issue at https://github.com/cosmos/cosmjs/issues.",
+            "If you think this message type should be included by default, please open an issue at https://github.com/titantkx/cosmjs/issues.",
         );
       }
       case 1: {

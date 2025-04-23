@@ -20,7 +20,11 @@ export interface DirectSignResponse {
 
 export interface OfflineDirectSigner {
   readonly getAccounts: () => Promise<readonly AccountData[]>;
-  readonly signDirect: (signerAddress: string, signDoc: SignDoc, coinType?: string) => Promise<DirectSignResponse>;
+  readonly signDirect: (
+    signerAddress: string,
+    signDoc: SignDoc,
+    coinType?: string,
+  ) => Promise<DirectSignResponse>;
 }
 
 export type OfflineSigner = OfflineAminoSigner | OfflineDirectSigner;

@@ -1,9 +1,10 @@
 {
   "name": "@cosmjs/faucet-client",
-  "version": "0.32.0",
+  "version": "0.32.13",
   "description": "The faucet client",
   "contributors": [
-    "Will Clark <willclarktech@users.noreply.github.com>"
+    "Will Clark <willclarktech@users.noreply.github.com>",
+    "Hung Doan <hugjobk@gmail.com>"
   ],
   "license": "Apache-2.0",
   "main": "build/index.js",
@@ -16,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs/tree/main/packages/faucet-client"
+    "url": "https://github.com/titantkx/cosmjs/tree/develop/packages/faucet-client"
   },
   "publishConfig": {
     "access": "public",

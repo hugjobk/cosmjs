@@ -70,36 +70,85 @@ export { AminoMsgTransfer, createIbcAminoConverters, isAminoMsgTransfer } from "
 export { ibcTypes, isMsgTransferEncodeObject, MsgTransferEncodeObject } from "./ibc/messages";
 export { IbcExtension, setupIbcExtension } from "./ibc/queries";
 export { MintExtension, MintParams, setupMintExtension } from "./mint/queries";
+export {
+  AminoMsgCreateClass,
+  AminoMsgMint,
+  AminoMsgTransferClass,
+  AminoMsgUpdateClass,
+  createNftmintAminoConverters,
+  isAminoMsgCreateClass,
+  isAminoMsgMint,
+  isAminoMsgTransferClass,
+  isAminoMsgUpdateClass,
+} from "./nftmint/aminomessages";
+export {
+  isMsgCreateClassEncodeObject,
+  isMsgMintEncodeObject,
+  isMsgTransferClassEncodeObject,
+  isMsgUpdateClassEncodeObject,
+  MsgCreateClassEncodeObject,
+  MsgMintEncodeObject,
+  MsgTransferClassEncodeObject,
+  MsgUpdateClassEncodeObject,
+  nftmintTypes,
+} from "./nftmint/messages";
 export { AminoMsgUnjail, createSlashingAminoConverters, isAminoMsgUnjail } from "./slashing/aminomessages";
+export { isMsgUnjailEncodeObject, MsgUnjailEncodeObject, slashingTypes } from "./slashing/messages";
 export { setupSlashingExtension, SlashingExtension } from "./slashing/queries";
 export {
   AminoMsgBeginRedelegate,
   AminoMsgCreateValidator,
+  AminoMsgCreateValidatorForOther,
   AminoMsgDelegate,
+  AminoMsgDelegateForOther,
   AminoMsgEditValidator,
   AminoMsgUndelegate,
   createStakingAminoConverters,
   isAminoMsgBeginRedelegate,
   isAminoMsgCreateValidator,
+  isAminoMsgCreateValidatorForOther,
   isAminoMsgDelegate,
+  isAminoMsgDelegateForOther,
   isAminoMsgEditValidator,
   isAminoMsgUndelegate,
 } from "./staking/aminomessages";
 export {
   isMsgBeginRedelegateEncodeObject,
   isMsgCreateValidatorEncodeObject,
+  isMsgCreateValidatorForOtherEncodeObject,
   isMsgDelegateEncodeObject,
+  isMsgDelegateForOtherEncodeObject,
   isMsgEditValidatorEncodeObject,
   isMsgUndelegateEncodeObject,
   MsgBeginRedelegateEncodeObject,
   MsgCreateValidatorEncodeObject,
+  MsgCreateValidatorForOtherEncodeObject,
   MsgDelegateEncodeObject,
+  MsgDelegateForOtherEncodeObject,
   MsgEditValidatorEncodeObject,
   MsgUndelegateEncodeObject,
   stakingTypes,
 } from "./staking/messages";
 export { setupStakingExtension, StakingExtension } from "./staking/queries";
 export { setupTxExtension, TxExtension } from "./tx/queries";
+export {
+  AminoMsgFundRewardPool,
+  AminoMsgSetAuthority,
+  AminoMsgSetRate,
+  createValidatorRewardAminoConverters,
+  isAminoMsgFundRewardPool,
+  isAminoMsgSetAuthority,
+  isAminoMsgSetRate,
+} from "./validatorreward/aminomessages";
+export {
+  isMsgFundRewardPoolEncodeObject,
+  isMsgSetAuthorityEncodeObject,
+  isMsgSetRateEncodeObject,
+  MsgFundRewardPoolEncodeObject,
+  MsgSetAuthorityEncodeObject,
+  MsgSetRateEncodeObject,
+  validatorrewardTypes,
+} from "./validatorreward/messages";
 export {
   AminoMsgCreateVestingAccount,
   createVestingAminoConverters,

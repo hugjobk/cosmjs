@@ -1,10 +1,11 @@
 {
   "name": "@cosmjs/proto-signing",
-  "version": "0.32.0",
+  "version": "0.32.13",
   "description": "Utilities for protobuf based signing (Cosmos SDK 0.40+)",
   "contributors": [
     "Will Clark <willclarktech@users.noreply.github.com>",
-    "Simon Warta <webmaster128@users.noreply.github.com>"
+    "Simon Warta <webmaster128@users.noreply.github.com>",
+    "Hung Doan <hugjobk@gmail.com>"
   ],
   "license": "Apache-2.0",
   "main": "build/index.js",
@@ -17,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs/tree/main/packages/proto-signing"
+    "url": "https://github.com/titantkx/cosmjs/tree/develop/packages/proto-signing"
   },
   "publishConfig": {
     "access": "public",
@@ -44,7 +45,7 @@
     "@cosmjs/encoding": "workspace:^",
     "@cosmjs/math": "workspace:^",
     "@cosmjs/utils": "workspace:^",
-    "cosmjs-types": "^0.9.0"
+    "cosmjs-types": "npm:titan-cosmjs-types@0.10.0"
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",

@@ -48,7 +48,7 @@ export class HttpBatchClient implements RpcClient {
       this.url = endpoint.url;
       this.headers = endpoint.headers;
     }
-    this.timer = setInterval(() => this.tick(), options.dispatchInterval);
+    this.timer = setInterval(() => this.tick(), options.dispatchInterval!);
     this.validate();
   }
 

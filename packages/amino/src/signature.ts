@@ -15,7 +15,11 @@ export interface StdSignature {
  * @param pubkey a compressed secp256k1 public key
  * @param signature a 64 byte fixed length representation of secp256k1 signature components r and s
  */
-export function encodeSecp256k1Signature(pubkey: Uint8Array, signature: Uint8Array, urlType?: string): StdSignature {
+export function encodeSecp256k1Signature(
+  pubkey: Uint8Array,
+  signature: Uint8Array,
+  urlType?: string,
+): StdSignature {
   if (signature.length !== 64) {
     throw new Error(
       "Signature must be 64 bytes long. Cosmos SDK uses a 2x32 byte fixed length encoding for the secp256k1 signature integers r and s.",

@@ -6,7 +6,9 @@ import { assertDefinedAndNotNull } from "@cosmjs/utils";
 import {
   MsgBeginRedelegate,
   MsgCreateValidator,
+  MsgCreateValidatorForOther,
   MsgDelegate,
+  MsgDelegateForOther,
   MsgEditValidator,
   MsgUndelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
@@ -61,6 +63,29 @@ export function isAminoMsgCreateValidator(msg: AminoMsg): msg is AminoMsgCreateV
   return msg.type === "cosmos-sdk/MsgCreateValidator";
 }
 
+/** Creates a new validator for other. */
+export interface AminoMsgCreateValidatorForOther extends AminoMsg {
+  readonly type: "cosmos-sdk/MsgCreateValidatorForOther";
+  readonly value: {
+    readonly description: Description;
+    readonly commission: CommissionRates;
+    readonly min_self_delegation: string;
+    /** Bech32 encoded payer address */
+    readonly payer_address: string;
+    /** Bech32 encoded delegator address */
+    readonly delegator_address: string;
+    /** Bech32 encoded validator address */
+    readonly validator_address: string;
+    /** Public key */
+    readonly pubkey: Pubkey;
+    readonly value: Coin;
+  };
+}
+
+export function isAminoMsgCreateValidatorForOther(msg: AminoMsg): msg is AminoMsgCreateValidatorForOther {
+  return msg.type === "cosmos-sdk/MsgCreateValidatorForOther";
+}
+
 /** Edits an existing validator. */
 export interface AminoMsgEditValidator extends AminoMsg {
   readonly type: "cosmos-sdk/MsgEditValidator";
@@ -107,6 +132,26 @@ export interface AminoMsgDelegate extends AminoMsg {
 
 export function isAminoMsgDelegate(msg: AminoMsg): msg is AminoMsgDelegate {
   return msg.type === "cosmos-sdk/MsgDelegate";
+}
+
+/**
+ * Performs a delegation from a delegate to a validator for other.
+ */
+export interface AminoMsgDelegateForOther extends AminoMsg {
+  readonly type: "cosmos-sdk/MsgDelegateForOther";
+  readonly value: {
+    /** Bech32 encoded payer address */
+    readonly payer_address: string;
+    /** Bech32 encoded delegator address */
+    readonly delegator_address: string;
+    /** Bech32 encoded validator address */
+    readonly validator_address: string;
+    readonly amount: Coin;
+  };
+}
+
+export function isAminoMsgDelegateForOther(msg: AminoMsg): msg is AminoMsgDelegateForOther {
+  return msg.type === "cosmos-sdk/MsgDelegateForOther";
 }
 
 /** Performs a redelegation from a delegate and source validator to a destination validator */
@@ -238,6 +283,75 @@ export function createStakingAminoConverters(): Record<string, AminoConverter> {
         };
       },
     },
+    "/cosmos.staking.v1beta1.MsgCreateValidatorForOther": {
+      aminoType: "cosmos-sdk/MsgCreateValidatorForOther",
+      toAmino: ({
+        description,
+        commission,
+        minSelfDelegation,
+        payerAddress,
+        delegatorAddress,
+        validatorAddress,
+        pubkey,
+        value,
+      }: MsgCreateValidatorForOther): AminoMsgCreateValidatorForOther["value"] => {
+        assertDefinedAndNotNull(description, "missing description");
+        assertDefinedAndNotNull(commission, "missing commission");
+        assertDefinedAndNotNull(pubkey, "missing pubkey");
+        assertDefinedAndNotNull(value, "missing value");
+        return {
+          description: {
+            moniker: description.moniker,
+            identity: description.identity,
+            website: description.website,
+            security_contact: description.securityContact,
+            details: description.details,
+          },
+          commission: {
+            rate: protoDecimalToJson(commission.rate),
+            max_rate: protoDecimalToJson(commission.maxRate),
+            max_change_rate: protoDecimalToJson(commission.maxChangeRate),
+          },
+          min_self_delegation: minSelfDelegation,
+          payer_address: payerAddress,
+          delegator_address: delegatorAddress,
+          validator_address: validatorAddress,
+          pubkey: decodePubkey(pubkey),
+          value: value,
+        };
+      },
+      fromAmino: ({
+        description,
+        commission,
+        min_self_delegation,
+        payer_address,
+        delegator_address,
+        validator_address,
+        pubkey,
+        value,
+      }: AminoMsgCreateValidatorForOther["value"]): MsgCreateValidatorForOther => {
+        return {
+          description: {
+            moniker: description.moniker,
+            identity: description.identity,
+            website: description.website,
+            securityContact: description.security_contact,
+            details: description.details,
+          },
+          commission: {
+            rate: jsonDecimalToProto(commission.rate),
+            maxRate: jsonDecimalToProto(commission.max_rate),
+            maxChangeRate: jsonDecimalToProto(commission.max_change_rate),
+          },
+          minSelfDelegation: min_self_delegation,
+          payerAddress: payer_address,
+          delegatorAddress: delegator_address,
+          validatorAddress: validator_address,
+          pubkey: encodePubkey(pubkey),
+          value: value,
+        };
+      },
+    },
     "/cosmos.staking.v1beta1.MsgDelegate": {
       aminoType: "cosmos-sdk/MsgDelegate",
       toAmino: ({ delegatorAddress, validatorAddress, amount }: MsgDelegate): AminoMsgDelegate["value"] => {
@@ -253,6 +367,34 @@ export function createStakingAminoConverters(): Record<string, AminoConverter> {
         validator_address,
         amount,
       }: AminoMsgDelegate["value"]): MsgDelegate => ({
+        delegatorAddress: delegator_address,
+        validatorAddress: validator_address,
+        amount: amount,
+      }),
+    },
+    "/cosmos.staking.v1beta1.MsgDelegateForOther": {
+      aminoType: "cosmos-sdk/MsgDelegateForOther",
+      toAmino: ({
+        payerAddress,
+        delegatorAddress,
+        validatorAddress,
+        amount,
+      }: MsgDelegateForOther): AminoMsgDelegateForOther["value"] => {
+        assertDefinedAndNotNull(amount, "missing amount");
+        return {
+          payer_address: payerAddress,
+          delegator_address: delegatorAddress,
+          validator_address: validatorAddress,
+          amount: amount,
+        };
+      },
+      fromAmino: ({
+        payer_address,
+        delegator_address,
+        validator_address,
+        amount,
+      }: AminoMsgDelegateForOther["value"]): MsgDelegateForOther => ({
+        payerAddress: payer_address,
         delegatorAddress: delegator_address,
         validatorAddress: validator_address,
         amount: amount,

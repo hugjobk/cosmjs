@@ -1,10 +1,11 @@
 {
   "name": "@cosmjs/crypto",
-  "version": "0.32.0",
+  "version": "0.32.13",
   "description": "Cryptography resources for blockchain projects",
   "contributors": [
     "IOV SAS <admin@iov.one>",
-    "Simon Warta"
+    "Simon Warta",
+    "Hung Doan <hugjobk@gmail.com>"
   ],
   "license": "Apache-2.0",
   "main": "build/index.js",
@@ -17,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs/tree/main/packages/crypto"
+    "url": "https://github.com/titantkx/cosmjs/tree/develop/packages/crypto"
   },
   "publishConfig": {
     "access": "public",

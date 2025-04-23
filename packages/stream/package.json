@@ -1,11 +1,12 @@
 {
   "name": "@cosmjs/stream",
-  "version": "0.32.0",
+  "version": "0.32.13",
   "description": "Utility functions for producing and consuming streams",
   "contributors": [
     "IOV SAS <admin@iov.one>",
     "Confio OÜ <hello@confio.tech>",
-    "Will Clark <willclarktech@users.noreply.github.com>"
+    "Will Clark <willclarktech@users.noreply.github.com>",
+    "Hung Doan <hugjobk@gmail.com>"
   ],
   "license": "Apache-2.0",
   "main": "build/index.js",
@@ -18,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tokenize-titan/cosmjs/tree/main/packages/stream"
+    "url": "https://github.com/titantkx/cosmjs/tree/develop/packages/stream"
   },
   "publishConfig": {
     "access": "public",

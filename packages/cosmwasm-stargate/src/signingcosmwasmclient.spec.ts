@@ -134,7 +134,6 @@ describe("SigningCosmWasmClient", () => {
       const wasm = getHackatom().data;
       const accessConfig: AccessConfig = {
         permission: AccessType.ACCESS_TYPE_EVERYBODY,
-        address: "",
         addresses: [],
       };
       const { codeId, checksum, originalSize, compressedSize } = await client.upload(

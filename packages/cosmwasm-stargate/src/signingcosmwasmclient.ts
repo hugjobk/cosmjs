@@ -63,6 +63,15 @@ import {
   wasmTypes,
 } from "./modules";
 
+export interface Fee {
+  readonly gas: "auto" | number;
+  readonly gasPrice: GasPrice;
+}
+
+function instanceofFee(object: any): boolean {
+  return typeof object === "object" && "gas" in object && "gasPrice" in object;
+}
+
 export interface UploadResult {
   /** A hex encoded sha256 checksum of the original Wasm code (that is stored on chain) */
   readonly checksum: string;
@@ -168,6 +177,7 @@ export interface SigningCosmWasmClientOptions {
   readonly broadcastTimeoutMs?: number;
   readonly broadcastPollIntervalMs?: number;
   readonly gasPrice?: GasPrice;
+  readonly isEthermint?: boolean;
 }
 
 export class SigningCosmWasmClient extends CosmWasmClient {
@@ -178,6 +188,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   private readonly signer: OfflineSigner;
   private readonly aminoTypes: AminoTypes;
   private readonly gasPrice: GasPrice | undefined;
+  private readonly isEthermint: boolean;
 
   /**
    * Creates an instance by connecting to the given CometBFT RPC endpoint.
@@ -241,6 +252,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     this.broadcastTimeoutMs = options.broadcastTimeoutMs;
     this.broadcastPollIntervalMs = options.broadcastPollIntervalMs;
     this.gasPrice = options.gasPrice;
+    this.isEthermint = options.isEthermint === true;
   }
 
   public async simulate(
@@ -255,7 +267,10 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     if (!accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
-    const pubkey = encodeSecp256k1Pubkey(accountFromSigner.pubkey);
+    const pubkey = encodeSecp256k1Pubkey(
+      accountFromSigner.pubkey,
+      this.isEthermint ? "/ethermint.crypto.v1.ethsecp256k1.PubKey" : undefined,
+    );
     const { sequence } = await this.getSequence(signerAddress);
     const { gasInfo } = await this.forceGetQueryClient().tx.simulate(anyMsgs, memo, pubkey, sequence);
     assertDefined(gasInfo);
@@ -266,7 +281,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async upload(
     senderAddress: string,
     wasmCode: Uint8Array,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     instantiatePermission?: AccessConfig,
   ): Promise<UploadResult> {
@@ -309,7 +324,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     codeId: number,
     msg: JsonObject,
     label: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     options: InstantiateOptions = {},
   ): Promise<InstantiateResult> {
     const instantiateContractMsg: MsgInstantiateContractEncodeObject = {
@@ -346,7 +361,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     salt: Uint8Array,
     msg: JsonObject,
     label: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | StdFee,
     options: InstantiateOptions = {},
   ): Promise<InstantiateResult> {
     const instantiateContract2Msg: MsgInstantiateContract2EncodeObject = {
@@ -383,7 +398,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     senderAddress: string,
     contractAddress: string,
     newAdmin: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<ChangeAdminResult> {
     const updateAdminMsg: MsgUpdateAdminEncodeObject = {
@@ -411,7 +426,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async clearAdmin(
     senderAddress: string,
     contractAddress: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<ChangeAdminResult> {
     const clearAdminMsg: MsgClearAdminEncodeObject = {
@@ -440,7 +455,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     contractAddress: string,
     codeId: number,
     migrateMsg: JsonObject,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<MigrateResult> {
     const migrateContractMsg: MsgMigrateContractEncodeObject = {
@@ -470,7 +485,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     senderAddress: string,
     contractAddress: string,
     msg: JsonObject,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     funds?: readonly Coin[],
   ): Promise<ExecuteResult> {
@@ -488,7 +503,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async executeMultiple(
     senderAddress: string,
     instructions: readonly ExecuteInstruction[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<ExecuteResult> {
     const msgs: MsgExecuteContractEncodeObject[] = instructions.map((i) => ({
@@ -518,7 +533,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     senderAddress: string,
     recipientAddress: string,
     amount: readonly Coin[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const sendMsg: MsgSendEncodeObject = {
@@ -536,7 +551,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     delegatorAddress: string,
     validatorAddress: string,
     amount: Coin,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const delegateMsg: MsgDelegateEncodeObject = {
@@ -550,7 +565,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     delegatorAddress: string,
     validatorAddress: string,
     amount: Coin,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const undelegateMsg: MsgUndelegateEncodeObject = {
@@ -563,7 +578,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async withdrawRewards(
     delegatorAddress: string,
     validatorAddress: string,
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
   ): Promise<DeliverTxResponse> {
     const withdrawDelegatorRewardMsg: MsgWithdrawDelegatorRewardEncodeObject = {
@@ -585,20 +600,24 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     timeoutHeight?: bigint,
   ): Promise<DeliverTxResponse> {
     let usedFee: StdFee;
-    if (fee == "auto" || typeof fee === "number") {
-      assertDefined(this.gasPrice, "Gas price must be set in the client options when auto gas is used.");
+    if (fee == "auto" || typeof fee === "number" || instanceofFee(fee)) {
+      // @ts-ignore
+      const gas = instanceofFee(fee) ? fee.gas : fee;
+      // @ts-ignore
+      const gasPrice = instanceofFee(fee) ? fee.gasPrice : this.gasPrice;
+      assertDefined(gasPrice, "Gas price must be set in the client options when auto gas is used.");
       const gasEstimation = await this.simulate(signerAddress, messages, memo);
       // Starting with Cosmos SDK 0.47, we see many cases in which 1.3 is not enough anymore
       // E.g. https://github.com/cosmos/cosmos-sdk/issues/16020
-      const multiplier = typeof fee === "number" ? fee : 1.4;
-      usedFee = calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice);
+      const multiplier = typeof gas === "number" ? gas : 1.4;
+      usedFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice);
     } else {
-      usedFee = fee;
+      usedFee = fee as StdFee;
     }
     const txRaw = await this.sign(signerAddress, messages, usedFee, memo, undefined, timeoutHeight);
     const txBytes = TxRaw.encode(txRaw).finish();
@@ -623,18 +642,22 @@ export class SigningCosmWasmClient extends CosmWasmClient {
   public async signAndBroadcastSync(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    fee: StdFee | "auto" | number,
+    fee: StdFee | "auto" | number | Fee,
     memo = "",
     timeoutHeight?: bigint,
   ): Promise<string> {
     let usedFee: StdFee;
-    if (fee == "auto" || typeof fee === "number") {
-      assertDefined(this.gasPrice, "Gas price must be set in the client options when auto gas is used.");
+    if (fee == "auto" || typeof fee === "number" || instanceofFee(fee)) {
+      // @ts-ignore
+      const gas = instanceofFee(fee) ? fee.gas : fee;
+      // @ts-ignore
+      const gasPrice = instanceofFee(fee) ? fee.gasPrice : this.gasPrice;
+      assertDefined(gasPrice, "Gas price must be set in the client options when auto gas is used.");
       const gasEstimation = await this.simulate(signerAddress, messages, memo);
-      const multiplier = typeof fee === "number" ? fee : 1.3;
-      usedFee = calculateFee(Math.round(gasEstimation * multiplier), this.gasPrice);
+      const multiplier = typeof gas === "number" ? gas : 1.3;
+      usedFee = calculateFee(Math.round(gasEstimation * multiplier), gasPrice);
     } else {
-      usedFee = fee;
+      usedFee = fee as StdFee;
     }
     const txRaw = await this.sign(signerAddress, messages, usedFee, memo, undefined, timeoutHeight);
     const txBytes = TxRaw.encode(txRaw).finish();
@@ -728,7 +751,12 @@ export class SigningCosmWasmClient extends CosmWasmClient {
     if (!accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
-    const pubkey = encodePubkey(encodeSecp256k1Pubkey(accountFromSigner.pubkey));
+    const pubkey = encodePubkey(
+      encodeSecp256k1Pubkey(
+        accountFromSigner.pubkey,
+        this.isEthermint ? "/ethermint.crypto.v1.ethsecp256k1.PubKey" : undefined,
+      ),
+    );
     const txBody: TxBodyEncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: {
@@ -747,7 +775,7 @@ export class SigningCosmWasmClient extends CosmWasmClient {
       fee.payer,
     );
     const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, chainId, accountNumber);
-    const { signature, signed } = await this.signer.signDirect(signerAddress, signDoc);
+    const { signature, signed } = await this.signer.signDirect(signerAddress, signDoc, pubkey.typeUrl);
     return TxRaw.fromPartial({
       bodyBytes: signed.bodyBytes,
       authInfoBytes: signed.authInfoBytes,

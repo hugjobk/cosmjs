@@ -7,6 +7,7 @@ export {
   extractKdfConfiguration,
 } from "./directsecp256k1hdwallet";
 export { DirectSecp256k1Wallet } from "./directsecp256k1wallet";
+export { DirectEthSecp256k1Wallet } from "./directethsecp256k1wallet";
 export { makeCosmoshubPath } from "./paths";
 export { anyToSinglePubkey, decodeOptionalPubkey, decodePubkey, encodePubkey } from "./pubkey";
 export {

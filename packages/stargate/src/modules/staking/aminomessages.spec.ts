@@ -5,7 +5,9 @@ import { PubKey as CosmosCryptoSecp256k1Pubkey } from "cosmjs-types/cosmos/crypt
 import {
   MsgBeginRedelegate,
   MsgCreateValidator,
+  MsgCreateValidatorForOther,
   MsgDelegate,
+  MsgDelegateForOther,
   MsgEditValidator,
   MsgUndelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
@@ -14,7 +16,9 @@ import { AminoTypes } from "../../aminotypes";
 import {
   AminoMsgBeginRedelegate,
   AminoMsgCreateValidator,
+  AminoMsgCreateValidatorForOther,
   AminoMsgDelegate,
+  AminoMsgDelegateForOther,
   AminoMsgEditValidator,
   AminoMsgUndelegate,
   createStakingAminoConverters,
@@ -120,6 +124,70 @@ describe("AminoTypes", () => {
       expect(aminoMsg).toEqual(expected);
     });
 
+    it("works for MsgCreateValidatorForOther", () => {
+      const msg: MsgCreateValidatorForOther = {
+        description: {
+          moniker: "validator",
+          identity: "me",
+          website: "valid.com",
+          securityContact: "Hamburglar",
+          details: "...",
+        },
+        commission: {
+          rate: "200000000000000000", // 0.2
+          maxRate: "300000000000000000", // 0.3
+          maxChangeRate: "100000000000000000", // 0.1
+        },
+        minSelfDelegation: "123",
+        payerAddress: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+        delegatorAddress: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+        validatorAddress: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+        pubkey: {
+          typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+          value: Uint8Array.from(
+            CosmosCryptoSecp256k1Pubkey.encode(
+              CosmosCryptoSecp256k1Pubkey.fromPartial({
+                key: fromBase64("A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ"),
+              }),
+            ).finish(),
+          ),
+        },
+        value: coin(1234, "ucosm"),
+      };
+      const aminoTypes = new AminoTypes(createStakingAminoConverters());
+      const aminoMsg = aminoTypes.toAmino({
+        typeUrl: "/cosmos.staking.v1beta1.MsgCreateValidatorForOther",
+        value: msg,
+      });
+      const expected: AminoMsgCreateValidatorForOther = {
+        type: "cosmos-sdk/MsgCreateValidatorForOther",
+        value: {
+          description: {
+            moniker: "validator",
+            identity: "me",
+            website: "valid.com",
+            security_contact: "Hamburglar",
+            details: "...",
+          },
+          commission: {
+            rate: "0.200000000000000000",
+            max_rate: "0.300000000000000000",
+            max_change_rate: "0.100000000000000000",
+          },
+          min_self_delegation: "123",
+          payer_address: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+          delegator_address: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+          validator_address: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+          pubkey: {
+            type: "tendermint/PubKeySecp256k1",
+            value: "A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ",
+          },
+          value: coin(1234, "ucosm"),
+        },
+      };
+      expect(aminoMsg).toEqual(expected);
+    });
+
     it("works for MsgDelegate", () => {
       const msg: MsgDelegate = {
         delegatorAddress: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
@@ -134,6 +202,30 @@ describe("AminoTypes", () => {
       const expected: AminoMsgDelegate = {
         type: "cosmos-sdk/MsgDelegate",
         value: {
+          delegator_address: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+          validator_address: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+          amount: coin(1234, "ucosm"),
+        },
+      };
+      expect(aminoMsg).toEqual(expected);
+    });
+
+    it("works for MsgDelegateForOther", () => {
+      const msg: MsgDelegateForOther = {
+        payerAddress: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+        delegatorAddress: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+        validatorAddress: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+        amount: coin(1234, "ucosm"),
+      };
+      const aminoTypes = new AminoTypes(createStakingAminoConverters());
+      const aminoMsg = aminoTypes.toAmino({
+        typeUrl: "/cosmos.staking.v1beta1.MsgDelegateForOther",
+        value: msg,
+      });
+      const expected: AminoMsgDelegateForOther = {
+        type: "cosmos-sdk/MsgDelegateForOther",
+        value: {
+          payer_address: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
           delegator_address: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
           validator_address: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
           amount: coin(1234, "ucosm"),
@@ -286,6 +378,69 @@ describe("AminoTypes", () => {
       });
     });
 
+    it("works for MsgCreateValidatorForOther", () => {
+      const aminoMsg: AminoMsgCreateValidatorForOther = {
+        type: "cosmos-sdk/MsgCreateValidatorForOther",
+        value: {
+          description: {
+            moniker: "validator",
+            identity: "me",
+            website: "valid.com",
+            security_contact: "Hamburglar",
+            details: "...",
+          },
+          commission: {
+            rate: "0.200000000000000000",
+            max_rate: "0.300000000000000000",
+            max_change_rate: "0.100000000000000000",
+          },
+          min_self_delegation: "123",
+          payer_address: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+          delegator_address: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+          validator_address: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+          pubkey: {
+            type: "tendermint/PubKeySecp256k1",
+            value: "A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ",
+          },
+          value: coin(1234, "ucosm"),
+        },
+      };
+      const msg = new AminoTypes(createStakingAminoConverters()).fromAmino(aminoMsg);
+      const expectedValue: MsgCreateValidatorForOther = {
+        description: {
+          moniker: "validator",
+          identity: "me",
+          website: "valid.com",
+          securityContact: "Hamburglar",
+          details: "...",
+        },
+        commission: {
+          rate: "200000000000000000", // 0.2
+          maxRate: "300000000000000000", // 0.3
+          maxChangeRate: "100000000000000000", // 0.1
+        },
+        minSelfDelegation: "123",
+        payerAddress: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+        delegatorAddress: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+        validatorAddress: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+        pubkey: {
+          typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+          value: Uint8Array.from(
+            CosmosCryptoSecp256k1Pubkey.encode(
+              CosmosCryptoSecp256k1Pubkey.fromPartial({
+                key: fromBase64("A08EGB7ro1ORuFhjOnZcSgwYlpe0DSFjVNUIkNNQxwKQ"),
+              }),
+            ).finish(),
+          ),
+        },
+        value: coin(1234, "ucosm"),
+      };
+      expect(msg).toEqual({
+        typeUrl: "/cosmos.staking.v1beta1.MsgCreateValidatorForOther",
+        value: expectedValue,
+      });
+    });
+
     it("works for MsgDelegate", () => {
       const aminoMsg: AminoMsgDelegate = {
         type: "cosmos-sdk/MsgDelegate",
@@ -303,6 +458,29 @@ describe("AminoTypes", () => {
       };
       expect(msg).toEqual({
         typeUrl: "/cosmos.staking.v1beta1.MsgDelegate",
+        value: expectedValue,
+      });
+    });
+
+    it("works for MsgDelegateForOther", () => {
+      const aminoMsg: AminoMsgDelegateForOther = {
+        type: "cosmos-sdk/MsgDelegateForOther",
+        value: {
+          payer_address: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+          delegator_address: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+          validator_address: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+          amount: coin(1234, "ucosm"),
+        },
+      };
+      const msg = new AminoTypes(createStakingAminoConverters()).fromAmino(aminoMsg);
+      const expectedValue: MsgDelegateForOther = {
+        payerAddress: "cosmos1dye4wn0p2w0hfpg90mqjdwqvxufz8vfdww8mmv",
+        delegatorAddress: "cosmos1pkptre7fdkl6gfrzlesjjvhxhlc3r4gmmk8rs6",
+        validatorAddress: "cosmos10dyr9899g6t0pelew4nvf4j5c3jcgv0r73qga5",
+        amount: coin(1234, "ucosm"),
+      };
+      expect(msg).toEqual({
+        typeUrl: "/cosmos.staking.v1beta1.MsgDelegateForOther",
         value: expectedValue,
       });
     });

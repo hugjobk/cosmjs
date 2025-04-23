@@ -2,7 +2,9 @@ import { EncodeObject, GeneratedType } from "@cosmjs/proto-signing";
 import {
   MsgBeginRedelegate,
   MsgCreateValidator,
+  MsgCreateValidatorForOther,
   MsgDelegate,
+  MsgDelegateForOther,
   MsgEditValidator,
   MsgUndelegate,
 } from "cosmjs-types/cosmos/staking/v1beta1/tx";
@@ -10,7 +12,9 @@ import {
 export const stakingTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/cosmos.staking.v1beta1.MsgBeginRedelegate", MsgBeginRedelegate],
   ["/cosmos.staking.v1beta1.MsgCreateValidator", MsgCreateValidator],
+  ["/cosmos.staking.v1beta1.MsgCreateValidatorForOther", MsgCreateValidatorForOther],
   ["/cosmos.staking.v1beta1.MsgDelegate", MsgDelegate],
+  ["/cosmos.staking.v1beta1.MsgDelegateForOther", MsgDelegateForOther],
   ["/cosmos.staking.v1beta1.MsgEditValidator", MsgEditValidator],
   ["/cosmos.staking.v1beta1.MsgUndelegate", MsgUndelegate],
 ];
@@ -33,6 +37,20 @@ export function isMsgCreateValidatorEncodeObject(o: EncodeObject): o is MsgCreat
   return (o as MsgCreateValidatorEncodeObject).typeUrl === "/cosmos.staking.v1beta1.MsgCreateValidator";
 }
 
+export interface MsgCreateValidatorForOtherEncodeObject extends EncodeObject {
+  readonly typeUrl: "/cosmos.staking.v1beta1.MsgCreateValidatorForOther";
+  readonly value: Partial<MsgCreateValidatorForOther>;
+}
+
+export function isMsgCreateValidatorForOtherEncodeObject(
+  o: EncodeObject,
+): o is MsgCreateValidatorForOtherEncodeObject {
+  return (
+    (o as MsgCreateValidatorForOtherEncodeObject).typeUrl ===
+    "/cosmos.staking.v1beta1.MsgCreateValidatorForOther"
+  );
+}
+
 export interface MsgDelegateEncodeObject extends EncodeObject {
   readonly typeUrl: "/cosmos.staking.v1beta1.MsgDelegate";
   readonly value: Partial<MsgDelegate>;
@@ -40,6 +58,19 @@ export interface MsgDelegateEncodeObject extends EncodeObject {
 
 export function isMsgDelegateEncodeObject(object: EncodeObject): object is MsgDelegateEncodeObject {
   return (object as MsgDelegateEncodeObject).typeUrl === "/cosmos.staking.v1beta1.MsgDelegate";
+}
+
+export interface MsgDelegateForOtherEncodeObject extends EncodeObject {
+  readonly typeUrl: "/cosmos.staking.v1beta1.MsgDelegateForOther";
+  readonly value: Partial<MsgDelegateForOther>;
+}
+
+export function isMsgDelegateForOtherEncodeObject(
+  object: EncodeObject,
+): object is MsgDelegateForOtherEncodeObject {
+  return (
+    (object as MsgDelegateForOtherEncodeObject).typeUrl === "/cosmos.staking.v1beta1.MsgDelegateForOther"
+  );
 }
 
 export interface MsgEditValidatorEncodeObject extends EncodeObject {

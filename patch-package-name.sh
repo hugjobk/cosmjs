@@ -1,15 +1,17 @@
-if [[ -z "$1" ]]; then
+#!/bin/sh
+
+set -e
+
+if [ -z "$1" ]; then
   echo "org is required!"
   echo "e.g. sh build.sh {org}"
   exit 1
 fi
 
-yarn build
-
 rm -r build
 mkdir build
 
-for folder in packages/*/ ; do
+for folder in packages/*/; do
   package=$(basename $folder)
   version=$(grep -Eo '"version": "[^"]+"' packages/$package/package.json | sed 's/"version": //; s/"//g')
 

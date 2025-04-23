@@ -358,7 +358,7 @@ __metadata:
     axios: ^1.6.0
     babylon: ^6.18.0
     chalk: ^4
-    cosmjs-types: ^0.9.0
+    cosmjs-types: "npm:titan-cosmjs-types@0.10.0"
     diff: ^4
     eslint: ^7.5
     eslint-config-prettier: ^8.3.0
@@ -404,7 +404,7 @@ __metadata:
     "@types/pako": ^1.0.1
     "@typescript-eslint/eslint-plugin": ^5.54.0
     "@typescript-eslint/parser": ^5.54.0
-    cosmjs-types: ^0.9.0
+    cosmjs-types: "npm:titan-cosmjs-types@0.10.0"
     eslint: ^7.5
     eslint-config-prettier: ^8.3.0
     eslint-import-resolver-node: ^0.3.4
@@ -761,7 +761,7 @@ __metadata:
     "@types/node": ^18
     "@typescript-eslint/eslint-plugin": ^5.54.0
     "@typescript-eslint/parser": ^5.54.0
-    cosmjs-types: ^0.9.0
+    cosmjs-types: "npm:titan-cosmjs-types@0.10.0"
     eslint: ^7.5
     eslint-config-prettier: ^8.3.0
     eslint-import-resolver-node: ^0.3.4
@@ -857,7 +857,7 @@ __metadata:
     "@types/node": ^18
     "@typescript-eslint/eslint-plugin": ^5.54.0
     "@typescript-eslint/parser": ^5.54.0
-    cosmjs-types: ^0.9.0
+    cosmjs-types: "npm:titan-cosmjs-types@0.10.0"
     eslint: ^7.5
     eslint-config-prettier: ^8.3.0
     eslint-import-resolver-node: ^0.3.4
@@ -3076,26 +3076,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cosmjs-monorepo-root@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "cosmjs-monorepo-root@workspace:."
-  dependencies:
-    "@cosmjs/amino": "workspace:^"
-    "@cosmjs/cosmwasm-stargate": "workspace:^"
-    "@cosmjs/crypto": "workspace:^"
-    "@cosmjs/encoding": "workspace:^"
-    "@cosmjs/proto-signing": "workspace:^"
-    "@cosmjs/stargate": "workspace:^"
-    eslint: ^7.5
-    prettier: ^2.8.8
-    typescript: ~4.9
-  languageName: unknown
-  linkType: soft
-
-"cosmjs-types@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "cosmjs-types@npm:0.9.0"
-  checksum: 9b00d169eca334f27418bb80b39e0cff0196af40b0079e1f85536246059279207b853bdb6ec224ead0a02d15d4b7f6bf16bc096d41c436426aa5f8976ed2b430
+"cosmjs-types@npm:titan-cosmjs-types@0.10.0":
+  version: 0.10.0
+  resolution: "titan-cosmjs-types@npm:0.10.0"
+  checksum: 97c8a38a381a6bb9002ce92d6c35fad471cfed3da4a5aa05f2b0692007a626e78737a11e3915bfe08ee962f7717f05df215561bcd6d808ab81bac07c8760870f
   languageName: node
   linkType: hard
 
@@ -7466,6 +7450,22 @@ __metadata:
   checksum: b6937a38c80c7f84d9c11dd75e49d5c44f71d95e810a3250bd1f1797fc7117c57698204adf676b71497acc205d769d65c16ae8fa10afad832ae1322630aef10a
   languageName: node
   linkType: hard
+
+"titan-cosmjs-monorepo-root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "titan-cosmjs-monorepo-root@workspace:."
+  dependencies:
+    "@cosmjs/amino": "workspace:^"
+    "@cosmjs/cosmwasm-stargate": "workspace:^"
+    "@cosmjs/crypto": "workspace:^"
+    "@cosmjs/encoding": "workspace:^"
+    "@cosmjs/proto-signing": "workspace:^"
+    "@cosmjs/stargate": "workspace:^"
+    eslint: ^7.5
+    prettier: ^2.8.8
+    typescript: ~4.9
+  languageName: unknown
+  linkType: soft
 
 "tmp@npm:^0.2.1":
   version: 0.2.1

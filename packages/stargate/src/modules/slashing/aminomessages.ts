@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { AminoMsg } from "@cosmjs/amino";
+import { MsgUnjail } from "cosmjs-types/cosmos/slashing/v1beta1/tx";
 
 import { AminoConverters } from "../../aminotypes";
 
@@ -19,5 +20,19 @@ export function isAminoMsgUnjail(msg: AminoMsg): msg is AminoMsgUnjail {
 }
 
 export function createSlashingAminoConverters(): AminoConverters {
-  throw new Error("Not implemented");
+  return {
+    "/cosmos.slashing.v1beta1.MsgUnjail": {
+      aminoType: "cosmos-sdk/MsgUnjail",
+      fromAmino: ({ validator_addr }: AminoMsgUnjail["value"]): MsgUnjail => {
+        return {
+          validatorAddr: validator_addr,
+        };
+      },
+      toAmino: ({ validatorAddr }: MsgUnjail): AminoMsgUnjail["value"] => {
+        return {
+          validator_addr: validatorAddr,
+        };
+      },
+    },
+  };
 }
